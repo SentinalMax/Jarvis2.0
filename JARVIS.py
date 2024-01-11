@@ -26,7 +26,7 @@ THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silenc
 DEEPGRAM_API_KEY = 'aa31cc8f3e1c6945664592285e2de5ccfbd17dd4'
 
 # OpenAI 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 
 def is_silent(snd_data, silence_threshold):
     "Returns 'True' if below the 'silent' threshold"
@@ -134,7 +134,7 @@ def chat_with_jarvis(prompt):
 
     response = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "You are Jarvis from ironman a helpful and knowledgeable yet sassy british assistant. You generally speak between one and three sentences."},
+            {"role": "system", "content": "You are Jarvis from ironman a helpful and knowledgeable yet sassy british assistant. You generally speak between one and three sentences. And you call me sir."},
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",
