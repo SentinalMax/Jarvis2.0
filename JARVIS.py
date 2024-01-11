@@ -9,8 +9,9 @@ from deepgram import Deepgram
 import json
 import os
 from openai import OpenAI
+import openai
 import pyttsx3
-
+from audioplayer import AudioPlayer
 
 # Constants for audio recording
 CHUNK_SIZE = 1024
@@ -23,6 +24,9 @@ THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silenc
 
 # Deepgram
 DEEPGRAM_API_KEY = 'aa31cc8f3e1c6945664592285e2de5ccfbd17dd4'
+
+# OpenAI 
+OPENAI_API_KEY = "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"
 
 def is_silent(snd_data, silence_threshold):
     "Returns 'True' if below the 'silent' threshold"
@@ -39,7 +43,7 @@ def record_audio():
     #     if dev['maxInputChannels'] > 0:
     #         print(f"{i}: {dev['name']}")
 
-    device_index = 1 #int(input("Please select the device index: "))
+    device_index = 3 #int(input("Please select the device index: "))
 
     # Start the recording stream
     stream = audio.open(format=FORMAT, channels=CHANNELS,
@@ -125,7 +129,7 @@ def chat_with_jarvis(prompt):
 
     client = OpenAI(
         # defaults to os.environ.get("OPENAI_API_KEY")
-        api_key="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",
+        api_key=OPENAI_API_KEY,
     )
 
     response = client.chat.completions.create(
@@ -141,45 +145,72 @@ def chat_with_jarvis(prompt):
 
     return message_content
 
-def simple_text_to_speech(message):
-    #engine = pyttsx3.init()
-    engine = pyttsx3.init(driverName='sapi5') 
-    voices = engine.getProperty('voices')
+# def simple_text_to_speech(message):
+#     #engine = pyttsx3.init()
+#     engine = pyttsx3.init(driverName='sapi5') 
+#     voices = engine.getProperty('voices')
 
-    engine.setProperty('voice', voices[0].id)
+#     engine.setProperty('voice', voices[0].id)
 
-    engine.say(str(message))
-    engine.runAndWait()
+#     engine.say(str(message))
+#     engine.runAndWait()
+
+def text_to_speech(message):
+    speech_file_path = "audio/speech.mp3"
+    if os.path.exists(speech_file_path):
+        #File exists, delete it
+        os.remove(speech_file_path)
+        #print(f"The file {save_path} has been deleted.") #DEBUG
+     
+    openai.api_key = OPENAI_API_KEY
+    response = openai.audio.speech.create(
+        model="tts-1",
+        voice="fable", #british
+        input=str(message)
+    )
+    response.stream_to_file(speech_file_path)
+
+    return speech_file_path
+    
 
 def main():
-    audio_data = record_audio()
-    output_folder = "audio"  # Change this to your actual output folder path
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    #timestamp = time.strftime("%Y%m%d-%H%M%S")
-    filename = "test.wav" #f"recording-{timestamp}.wav"
-    save_path = os.path.join(output_folder, filename)
+    while True:
+        audio_data = record_audio()
+        output_folder = "audio"  # Change this to your actual output folder path
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+        #timestamp = time.strftime("%Y%m%d-%H%M%S")
+        filename = "recording.wav" #f"recording-{timestamp}.wav"
+        save_path = os.path.join(output_folder, filename)
 
-    if os.path.exists(save_path):
-    # File exists, delete it
-        os.remove(save_path)
-        #print(f"The file {save_path} has been deleted.") #DEBUG
+        if os.path.exists(save_path):
+        # File exists, delete it
+            os.remove(save_path)
+            #print(f"The file {save_path} has been deleted.") #DEBUG
 
-    save_audio(audio_data, save_path)
-    #print(f"Recording saved to {save_path}") #DEBUG
+        save_audio(audio_data, save_path)
+        #print(f"Recording saved to {save_path}") #DEBUG
 
-    # Deepgram
-    prompt = deepgram(save_path)
-    print(prompt)
+        # Deepgram
+        prompt = deepgram(save_path)
+        print(prompt)
 
-    # ChatGPT
-    jarvis_response = chat_with_jarvis(prompt=prompt)
-    print(jarvis_response)
+        # ChatGPT
+        jarvis_response = chat_with_jarvis(prompt=prompt)
+        print(jarvis_response)
 
-    # Text to speech
-    simple_text_to_speech(jarvis_response)
+        ### Text to speech ###
+        #simple_text_to_speech(jarvis_response)
+        speech_file_path = text_to_speech(jarvis_response)
 
-    main()
+        # Path to your mp3 file
+
+        # Playing the audio file
+        audio = AudioPlayer(speech_file_path)
+        audio.play(block=True)  # Play without blocking
+
+        # If you want to stop the playback
+        # audio.stop()
 
 # This check is necessary to run the main function when the script is executed
 if __name__ == "__main__":
