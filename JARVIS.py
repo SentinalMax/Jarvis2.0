@@ -25,7 +25,7 @@ THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silenc
 # Deepgram
 DEEPGRAM_API_KEY = 'aa31cc8f3e1c6945664592285e2de5ccfbd17dd4'
 
-# OpenAI 
+# OpenAI (if published in a GitHub repo, key will be revoked so you'll have to generate a new one)
 OPENAI_API_KEY = "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"
 
 def is_silent(snd_data, silence_threshold):
