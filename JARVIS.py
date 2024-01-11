@@ -125,12 +125,12 @@ def chat_with_jarvis(prompt):
 
     client = OpenAI(
         # defaults to os.environ.get("OPENAI_API_KEY")
-        api_key="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",
+        api_key="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",
     )
 
     response = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "You are Jarvis from ironman a helpful and knowledgeable yet sassy british assistant."},
+            {"role": "system", "content": "You are Jarvis from ironman a helpful and knowledgeable yet sassy british assistant. You generally speak between one and three sentences."},
             {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",
