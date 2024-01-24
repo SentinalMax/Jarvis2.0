@@ -23,10 +23,12 @@ PREV_AUDIO = 0.5  # Previous audio length in seconds to keep before the silence 
 THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silence threshold
 
 # Deepgram
-DEEPGRAM_API_KEY = 'aa31cc8f3e1c6945664592285e2de5ccfbd17dd4'
 
-# OpenAI (if published in a GitHub repo, key will be revoked so you'll have to generate a new one)
-OPENAI_API_KEY = "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"
+with open('KEYS.json', 'r') as file:
+    data = json.load(file)
+
+DEEPGRAM_API_KEY = data['deepgram']
+OPENAI_API_KEY = data['openai']
 
 def is_silent(snd_data, silence_threshold):
     "Returns 'True' if below the 'silent' threshold"
