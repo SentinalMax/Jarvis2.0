@@ -25,10 +25,10 @@ THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silenc
 # Deepgram
 
 with open('KEYS.json', 'r') as file:
-    data = json.load(file)
+    keys_data = json.load(file)
 
-DEEPGRAM_API_KEY = data['deepgram']
-OPENAI_API_KEY = data['openai']
+DEEPGRAM_API_KEY = keys_data['deepgram']
+OPENAI_API_KEY = keys_data['openai']
 
 def is_silent(snd_data, silence_threshold):
     "Returns 'True' if below the 'silent' threshold"
