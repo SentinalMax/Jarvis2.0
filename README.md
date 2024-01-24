@@ -31,15 +31,9 @@ deactivate
 pip install pyttsx3
 ```
 
-## ChatGPT
-
-* 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
-
 ## Deepgram
 
 * [Deepgram Github](https://github.com/deepgram/deepgram-python-sdk)
-
-* API key secret: `aa31cc8f3e1c6945664592285e2de5ccfbd17dd4`
 
 ```
 pip install deepgram-sdk
