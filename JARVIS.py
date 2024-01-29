@@ -9,6 +9,7 @@ from deepgram import Deepgram
 # pip3 install deepgram-sdk
 import json
 import os
+import sys
 from openai import OpenAI
 import openai
 #import pyttsx3
@@ -19,9 +20,9 @@ CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-SILENCE_LIMIT = 2  # Silence limit in seconds. The audio recording will stop if this much silence is detected.
+SILENCE_LIMIT = 2  # Silence limit in seconds. The audio recording will stop if this much silence is detected. (DEFAULT = 2)
 PREV_AUDIO = 0.5  # Previous audio length in seconds to keep before the silence detected.
-THRESHOLD_BUFFER = 10  # Buffer value to add over the noise floor for the silence threshold
+THRESHOLD_BUFFER = 15  # Buffer value to add over the noise floor for the silence threshold (DEFAULT = 10)
 
 # Deepgram
 
@@ -50,6 +51,8 @@ def record_audio():
     #         print(f"{i}: {dev['name']}")
 
     device_index = 3 #int(input("Please select the device index: "))
+    # 3 = 2- USB Audio Device (MIC)
+    # 12 = HD Pro Webcam C920 (CAMERA)
 
     # Start the recording stream
     stream = audio.open(format=FORMAT, channels=CHANNELS,
@@ -63,9 +66,9 @@ def record_audio():
     slid_win = deque(maxlen=int(SILENCE_LIMIT * rel))
     prev_audio = deque(maxlen=int(PREV_AUDIO * rel))  # Prepend audio from before noise was detected
     started = False
-    noise_floor = None  # Initialize noise floor
+    noise_floor = None  # Initialize noise floor (DEFAULT = None)
     silent_chunks = 0  # Count of consecutive silent chunks
-    silence_threshold = 1000  # Start with a default threshold
+    silence_threshold = 1000  # Start with a default threshold of 1000
 
     while True:
         cur_data = stream.read(CHUNK_SIZE, exception_on_overflow=False)
@@ -201,22 +204,28 @@ def main():
         prompt = deepgram(save_path)
         print(prompt)
 
-        # ChatGPT
-        jarvis_response = chat_with_jarvis(prompt=prompt)
-        print(jarvis_response)
+        if prompt.lower() in ("goodbye.", "power down.", "power off.", "shutdown.", "exit.", "goodbye jarvis."):
+            speech_file_path = text_to_speech("Goodbye, sir.")
+            # Playing the audio file
+            audio = AudioPlayer(speech_file_path)
+            audio.play(block=True)  # Play without blocking
+            time.sleep(2)
+            sys.exit()
+        else:
+            # ChatGPT
+            jarvis_response = chat_with_jarvis(prompt=prompt)
+            print(jarvis_response)
 
-        ### Text to speech ###
-        #simple_text_to_speech(jarvis_response)
-        speech_file_path = text_to_speech(jarvis_response)
+            ### Text to speech ###
+            #simple_text_to_speech(jarvis_response)
+            speech_file_path = text_to_speech(jarvis_response)
 
-        # Path to your mp3 file
+            # Path to your mp3 file
+            audio = AudioPlayer(speech_file_path)
+            audio.play(block=True)  # Play without blocking
 
-        # Playing the audio file
-        audio = AudioPlayer(speech_file_path)
-        audio.play(block=True)  # Play without blocking
-
-        # If you want to stop the playback
-        # audio.stop()
+            # If you want to stop the playback
+            # audio.stop()
 
 # This check is necessary to run the main function when the script is executed
 if __name__ == "__main__":
