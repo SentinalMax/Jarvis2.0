@@ -6,6 +6,7 @@ apturl==0.5.2
 async-timeout==4.0.3
 asyncio==3.4.3
 attrs==23.2.0
+audioplayer==0.6
 blinker==1.4
 Brlapi==0.8.3
 certifi==2020.6.20
@@ -67,6 +68,7 @@ pyRFC3339==1.1
 python-apt==2.4.0+ubuntu2
 python-dateutil==2.8.1
 python-debian==0.1.43+ubuntu1.1
+pyttsx3==2.90
 pytz==2022.1
 pyxdg==0.27
 PyYAML==5.4.1
