@@ -6,11 +6,12 @@ from collections import deque
 import os
 import time
 from deepgram import Deepgram
+# pip3 install deepgram-sdk
 import json
 import os
 from openai import OpenAI
 import openai
-import pyttsx3
+#import pyttsx3
 from audioplayer import AudioPlayer
 
 # Constants for audio recording
@@ -36,6 +37,9 @@ def is_silent(snd_data, silence_threshold):
 
 def record_audio():
     # Initialize PyAudio
+    # portaudio must be install along with pyaudio for dependancy reasons
+    # see (https://stackoverflow.com/questions/33513522/when-installing-pyaudio-pip-cannot-find-portaudio-h-in-usr-local-include)
+    
     audio = pyaudio.PyAudio()
 
     # Choose the device
