@@ -2,7 +2,7 @@ from deepgram import Deepgram
 import json
 
 DEEPGRAM_API_KEY = 'aa31cc8f3e1c6945664592285e2de5ccfbd17dd4'
-PATH_TO_FILE = 'audio/test.wav'
+PATH_TO_FILE = 'test_audio/5.mp3'
 
 def main():
     # Initializes the Deepgram SDK
